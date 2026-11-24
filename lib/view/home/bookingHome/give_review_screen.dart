@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:khel_pakistan/utils/app_colors.dart';
-import 'package:khel_pakistan/utils/assets_icons.dart';
+import 'package:khel_pakistan/utils/app_text_styles.dart';
 import 'package:khel_pakistan/utils/assets_images.dart';
-import 'package:khel_pakistan/utils/fonts.dart';
 import 'package:khel_pakistan/widgets/app_button.dart';
+import 'package:khel_pakistan/widgets/app_page.dart';
 import 'package:khel_pakistan/widgets/review_submitted_sheet.dart';
 
 class GiveReviewScreen extends StatefulWidget {
-  const GiveReviewScreen({
-    super.key,
-    this.venueName = 'Karachi Sports Arena',
-  });
+  const GiveReviewScreen({super.key, this.venueName = 'Karachi Sports Arena'});
 
   final String venueName;
 
@@ -21,8 +18,18 @@ class GiveReviewScreen extends StatefulWidget {
 }
 
 class _GiveReviewScreenState extends State<GiveReviewScreen> {
+  static const _labels = ['', 'Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+  static const _quickTags = [
+    'Clean court',
+    'Good lighting',
+    'Friendly staff',
+    'Easy parking',
+    'Value for money',
+  ];
+
   int _rating = 0;
-  final TextEditingController _reviewController = TextEditingController();
+  final Set<String> _tags = {};
+  final _reviewController = TextEditingController();
 
   @override
   void dispose() {
@@ -32,184 +39,141 @@ class _GiveReviewScreenState extends State<GiveReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(AssetsImages.allBg),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        width: 42.w,
-                        height: 42.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.white.withValues(alpha: 0.1),
-                        ),
-                        child: Image.asset(
-                          AssetsIcons.back,
-                          width: 16.w,
-                          height: 16.h,
-                          color: AppColors.white,
-                          errorBuilder: (_, __, ___) => Icon(
-                            Icons.arrow_back_ios_new,
-                            color: AppColors.white,
-                            size: 16.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'GIVE REVIEW',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 28.sp,
-                          fontFamily: AppFonts.rocket,
-                          color: AppColors.green,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 42.w),
-                  ],
-                ),
+    return AppPage(
+      title: 'Give Review',
+      body: ListView(
+        padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 20.h),
+        children: [
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.r),
+              child: Image.asset(
+                AssetsImages.venue1,
+                width: 120.r,
+                height: 120.r,
+                fit: BoxFit.cover,
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 20.h),
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 28.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF23243A),
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: AppColors.white.withValues(alpha: 0.08),
+            ),
+          ),
+          14.verticalSpace,
+          Text(
+            widget.venueName,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.h2.copyWith(fontWeight: FontWeight.w600),
+          ),
+          4.verticalSpace,
+          Text(
+            'How would you rate this venue?',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodySecondary,
+          ),
+          18.verticalSpace,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (var i = 1; i <= 5; i++)
+                GestureDetector(
+                  onTap: () => setState(() => _rating = i),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                    child: AnimatedScale(
+                      duration: const Duration(milliseconds: 150),
+                      scale: i <= _rating ? 1.1 : 1,
+                      child: Icon(
+                        i <= _rating
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        size: 44.r,
+                        color: i <= _rating ? AppColors.star : AppColors.border,
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 64.w,
-                          height: 64.w,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: AppColors.orange,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.thumb_up_alt_rounded,
-                            color: AppColors.white,
-                            size: 30.sp,
-                          ),
-                        ),
-                        20.verticalSpace,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(5, (index) {
-                            final starIndex = index + 1;
-                            final selected = starIndex <= _rating;
-                            return GestureDetector(
-                              onTap: () => setState(() => _rating = starIndex),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                                child: Icon(
-                                  selected ? Icons.star : Icons.star_border,
-                                  color: const Color(0xFFFFC107),
-                                  size: 34.sp,
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                        18.verticalSpace,
-                        Text(
-                          'RATE THIS VENUE',
-                          style: TextStyle(
-                            fontSize: 22.sp,
-                            fontFamily: AppFonts.rocket,
-                            color: AppColors.green,
-                          ),
-                        ),
-                        8.verticalSpace,
-                        Text(
-                          'How would you rate this venue?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontFamily: AppFonts.satoshi,
-                            color: AppColors.white.withValues(alpha: 0.55),
-                          ),
-                        ),
-                        20.verticalSpace,
-                        TextField(
-                          controller: _reviewController,
-                          maxLines: 5,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontFamily: AppFonts.satoshi,
-                            color: AppColors.white,
-                          ),
-                          cursorColor: AppColors.green,
-                          decoration: InputDecoration(
-                            hintText: 'Write Review',
-                            hintStyle: TextStyle(
-                              fontSize: 14.sp,
-                              fontFamily: AppFonts.satoshi,
-                              color: AppColors.white.withValues(alpha: 0.45),
-                            ),
-                            filled: true,
-                            fillColor: const Color(0xFF1B1C2D),
-                            contentPadding: EdgeInsets.all(16.r),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14.r),
-                              borderSide: BorderSide(
-                                color: AppColors.white.withValues(alpha: 0.1),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14.r),
-                              borderSide: const BorderSide(
-                                color: AppColors.green,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 16.h),
-                child: AppButton(
-                  text: 'Submit',
-                  gradientColors: const [AppColors.green],
-                  textColor: AppColors.black,
-                  onTap: () async {
-                    await showReviewSubmittedSheet(context);
-                    if (mounted) Get.back();
-                  },
-                ),
-              ),
             ],
           ),
-        ),
+          8.verticalSpace,
+          SizedBox(
+            height: 20.h,
+            child: Text(
+              _labels[_rating],
+              textAlign: TextAlign.center,
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          20.verticalSpace,
+          const FieldLabel('What did you like?'),
+          Wrap(
+            spacing: 8.w,
+            runSpacing: 8.h,
+            children: [
+              for (final tag in _quickTags)
+                GestureDetector(
+                  onTap: () => setState(
+                    () => _tags.contains(tag)
+                        ? _tags.remove(tag)
+                        : _tags.add(tag),
+                  ),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _tags.contains(tag)
+                          ? AppColors.primary
+                          : AppColors.surface,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: _tags.contains(tag)
+                            ? AppColors.dark
+                            : AppColors.divider,
+                      ),
+                    ),
+                    child: Text(
+                      tag,
+                      style: AppTextStyles.caption.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          20.verticalSpace,
+          const FieldLabel('Your review'),
+          TextField(
+            controller: _reviewController,
+            maxLines: 5,
+            style: AppTextStyles.input,
+            cursorColor: AppColors.textPrimary,
+            decoration: InputDecoration(
+              hintText: 'Tell other players about your experience…',
+              hintStyle: AppTextStyles.hint,
+              filled: true,
+              fillColor: AppColors.surface,
+              contentPadding: EdgeInsets.all(16.r),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16.r),
+                borderSide: const BorderSide(color: AppColors.divider),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16.r),
+                borderSide: const BorderSide(color: AppColors.dark),
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottom: AppButton(
+        text: 'Submit Review',
+        onTap: () async {
+          await showReviewSubmittedSheet(context);
+          if (mounted) Get.back();
+        },
       ),
     );
   }

@@ -2,220 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:khel_pakistan/utils/app_colors.dart';
-import 'package:khel_pakistan/utils/assets_icons.dart';
+import 'package:khel_pakistan/utils/app_text_styles.dart';
 import 'package:khel_pakistan/utils/assets_images.dart';
-import 'package:khel_pakistan/utils/fonts.dart';
 import 'package:khel_pakistan/view/home/tournaments/tournament_detail_screen.dart';
+import 'package:khel_pakistan/widgets/app_card.dart';
+import 'package:khel_pakistan/widgets/app_page.dart';
 
 class TournamentHistoryScreen extends StatelessWidget {
   const TournamentHistoryScreen({super.key});
 
-  final List<_HistoryItem> _items = const [
+  static const _items = [
     _HistoryItem(
-      image: AssetsImages.badminton,
-      title: 'Karachi Champions League 2026',
+      image: AssetsImages.tournament1,
+      title: 'Global Football Fan Day',
+      sport: 'Football',
       date: '18 - 20 July',
       time: '6 - 11 PM',
+      result: 'Semi-finalist',
     ),
     _HistoryItem(
-      image: AssetsImages.badminton,
-      title: 'Karachi Champions League 2026',
-      date: '18 - 20 July',
-      time: '6 - 11 PM',
+      image: AssetsImages.tournament2,
+      title: 'Karachi Padel Open',
+      sport: 'Padel',
+      date: '02 - 03 June',
+      time: '5 - 10 PM',
+      result: 'Winner',
     ),
     _HistoryItem(
-      image: AssetsImages.badminton,
-      title: 'Karachi Champions League 2026',
-      date: '18 - 20 July',
+      image: AssetsImages.tournament1,
+      title: 'Karachi Champions League',
+      sport: 'Football',
+      date: '12 - 14 April',
       time: '6 - 11 PM',
+      result: 'Group stage',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(AssetsImages.allBg),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        width: 42.w,
-                        height: 42.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.white.withValues(alpha: 0.1),
-                        ),
-                        child: Image.asset(
-                          AssetsIcons.back,
-                          width: 16.w,
-                          height: 16.h,
-                          color: AppColors.white,
-                          errorBuilder: (_, __, ___) => Icon(
-                            Icons.arrow_back_ios_new,
-                            color: AppColors.white,
-                            size: 16.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'TOURNAMENT HISTORY',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24.sp,
-                          fontFamily: AppFonts.rocket,
-                          color: AppColors.green,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 42.w),
-                  ],
-                ),
-              ),
-              16.verticalSpace,
-              Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
-                  itemCount: _items.length,
-                  separatorBuilder: (_, __) => 12.verticalSpace,
-                  itemBuilder: (context, index) {
-                    final item = _items[index];
-                    return Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF23243A),
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: AppColors.white.withValues(alpha: 0.08),
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12.r),
-                            child: Image.asset(
-                              item.image,
-                              width: 88.w,
-                              height: 88.w,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          12.horizontalSpace,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        item.title,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          fontFamily: AppFonts.satoshi,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    8.horizontalSpace,
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10.w,
-                                        vertical: 4.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.orange,
-                                        borderRadius: BorderRadius.circular(
-                                          8.r,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Joined',
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          fontFamily: AppFonts.satoshi,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                8.verticalSpace,
-                                Text(
-                                  'Date: ${item.date}',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontFamily: AppFonts.satoshi,
-                                    color: AppColors.white.withValues(
-                                      alpha: 0.55,
-                                    ),
-                                  ),
-                                ),
-                                4.verticalSpace,
-                                Text(
-                                  'Time: ${item.time}',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontFamily: AppFonts.satoshi,
-                                    color: AppColors.white.withValues(
-                                      alpha: 0.55,
-                                    ),
-                                  ),
-                                ),
-                                8.verticalSpace,
-                                GestureDetector(
-                                  onTap: () => Get.to(
-                                    () => TournamentDetailScreen(
-                                      image: item.image,
-                                      title: item.title,
-                                      showJoinBar: false,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'View Details',
-                                    style: TextStyle(
-                                      fontSize: 13.sp,
-                                      fontFamily: AppFonts.satoshi,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.green,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: AppColors.green,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+    return AppPage(
+      title: 'Tournament History',
+      body: ListView.separated(
+        padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 24.h),
+        itemCount: _items.length,
+        separatorBuilder: (_, __) => 12.verticalSpace,
+        itemBuilder: (_, i) => _HistoryCard(item: _items[i]),
       ),
     );
   }
@@ -225,12 +56,104 @@ class _HistoryItem {
   const _HistoryItem({
     required this.image,
     required this.title,
+    required this.sport,
     required this.date,
     required this.time,
+    required this.result,
   });
 
   final String image;
   final String title;
+  final String sport;
   final String date;
   final String time;
+  final String result;
+}
+
+class _HistoryCard extends StatelessWidget {
+  const _HistoryCard({required this.item});
+
+  final _HistoryItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final won = item.result == 'Winner';
+    return AppCard(
+      onTap: () => Get.to(
+        () => TournamentDetailScreen(
+          image: item.image,
+          title: item.title,
+          sport: item.sport,
+          showJoinBar: false,
+        ),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: Image.asset(
+              item.image,
+              width: 88.r,
+              height: 88.r,
+              fit: BoxFit.cover,
+            ),
+          ),
+          12.horizontalSpace,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.subtitle.copyWith(fontSize: 15.sp),
+                ),
+                4.verticalSpace,
+                Text(
+                  '${item.sport} · ${item.date} · ${item.time}',
+                  style: AppTextStyles.caption,
+                ),
+                10.verticalSpace,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: won ? AppColors.primary : AppColors.card,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        won ? Icons.emoji_events_rounded : Icons.flag_outlined,
+                        size: 13.r,
+                        color: AppColors.textPrimary,
+                      ),
+                      4.horizontalSpace,
+                      Text(
+                        item.result,
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.textHint,
+            size: 22.r,
+          ),
+        ],
+      ),
+    );
+  }
 }

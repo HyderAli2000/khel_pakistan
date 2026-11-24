@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:khel_pakistan/utils/app_colors.dart';
+import 'package:khel_pakistan/utils/fonts.dart';
 
 class AppBottomNavItem {
   const AppBottomNavItem({
     required this.label,
     required this.icon,
     required this.activeIcon,
+    this.tintActive = true,
   });
 
   final String label;
   final String icon;
   final String activeIcon;
+
+  /// false when [activeIcon] is already coloured (e.g. the lime home icon).
+  final bool tintActive;
 }
 
+/// Dark pill bottom nav from the new design.
 class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     super.key,
@@ -29,35 +35,30 @@ class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Container(
+        height: 68.h,
         decoration: BoxDecoration(
-          color: Color(0xff1C2F3B),
-          borderRadius: BorderRadius.circular(9999999.r),
+          color: AppColors.dark,
+          borderRadius: BorderRadius.circular(999),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, -2),
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: SafeArea(
-          top: true,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 14.h),
-            child: Row(
-              children: List.generate(items.length, (index) {
-                return Expanded(
-                  child: _NavItem(
-                    item: items[index],
-                    selected: currentIndex == index,
-                    onTap: () => onTap(index),
-                  ),
-                );
-              }),
-            ),
-          ),
+        child: Row(
+          children: List.generate(items.length, (index) {
+            return Expanded(
+              child: _NavItem(
+                item: items[index],
+                selected: currentIndex == index,
+                onTap: () => onTap(index),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -77,36 +78,36 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.orange : Colors.white;
+    final Color? iconColor = selected
+        ? (item.tintActive ? AppColors.primary : null)
+        : AppColors.onDark;
 
-    return Material(
-      color: Colors.transparent,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              selected ? item.activeIcon : item.icon,
-              width: 24.w,
-              height: 24.h,
-              color: color,
-              fit: BoxFit.contain,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            selected ? item.activeIcon : item.icon,
+            width: 24.r,
+            height: 24.r,
+            color: iconColor,
+            fit: BoxFit.contain,
+          ),
+          5.verticalSpace,
+          Text(
+            item.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontFamily: AppFonts.inter,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              color: AppColors.onDark,
             ),
-            4.verticalSpace,
-            Text(
-              item.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                color: Colors.white,
-                fontFamily: 'Inter',
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

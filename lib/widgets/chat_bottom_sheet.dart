@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:khel_pakistan/utils/app_colors.dart';
+import 'package:khel_pakistan/utils/app_text_styles.dart';
 import 'package:khel_pakistan/utils/assets_images.dart';
-import 'package:khel_pakistan/utils/fonts.dart';
+import 'package:khel_pakistan/widgets/app_circle_button.dart';
 
 Future<void> showChatBottomSheet(
   BuildContext context, {
-  String title = 'KARACHI SPORTS ARENA',
+  String title = 'Karachi Sports Arena',
 }) {
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    barrierColor: AppColors.dark.withValues(alpha: 0.45),
     builder: (context) => ChatBottomSheet(title: title),
   );
 }
@@ -26,27 +28,24 @@ class ChatBottomSheet extends StatefulWidget {
 }
 
 class _ChatBottomSheetState extends State<ChatBottomSheet> {
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  final _messageController = TextEditingController();
+  final _scrollController = ScrollController();
 
   final List<_ChatMessage> _messages = [
-    _ChatMessage(
-      text: 'Lorem Ipsum !',
-      time: '04:45 PM',
-      isMine: false,
-      avatar: AssetsImages.p1,
+    const _ChatMessage(
+      text: 'Hi! Is the court available this Friday evening?',
+      time: '04:41 PM',
+      isMine: true,
     ),
-    _ChatMessage(
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing',
+    const _ChatMessage(
+      text: 'Yes, 7–9 PM is open. Shall we hold it for you?',
+      time: '04:44 PM',
+      isMine: false,
+    ),
+    const _ChatMessage(
+      text: 'Great, please do. We are 8 players.',
       time: '04:45 PM',
       isMine: true,
-      avatar: AssetsImages.p1,
-    ),
-    _ChatMessage(
-      text: 'Lorem Ipsum !',
-      time: '04:45 PM',
-      isMine: false,
-      avatar: AssetsImages.p1,
     ),
   ];
 
@@ -60,19 +59,11 @@ class _ChatBottomSheetState extends State<ChatBottomSheet> {
   void _sendMessage() {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
-
+    final now = TimeOfDay.now().format(context);
     setState(() {
-      _messages.add(
-        _ChatMessage(
-          text: text,
-          time: '04:45 PM',
-          isMine: true,
-          avatar: AssetsImages.p1,
-        ),
-      );
+      _messages.add(_ChatMessage(text: text, time: now, isMine: true));
       _messageController.clear();
     });
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -86,129 +77,122 @@ class _ChatBottomSheetState extends State<ChatBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
     return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.72,
+        height: MediaQuery.sizeOf(context).height * 0.72,
         decoration: BoxDecoration(
-          color: const Color(0xFF1B1C2D),
+          color: AppColors.background,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         ),
         child: Column(
           children: [
             10.verticalSpace,
             Container(
-              width: 48.w,
+              width: 44.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(999.r),
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(999),
               ),
             ),
-            12.verticalSpace,
+            10.verticalSpace,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      width: 40.w,
-                      height: 40.w,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.green.withValues(alpha: 0.6),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.green,
-                        size: 16.sp,
-                      ),
-                    ),
+                  CircleAvatar(
+                    radius: 22.r,
+                    backgroundImage: const AssetImage(AssetsImages.venue1),
                   ),
+                  12.horizontalSpace,
                   Expanded(
-                    child: Text(
-                      widget.title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22.sp,
-                        fontFamily: AppFonts.rocket,
-                        color: AppColors.green,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.subtitle,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8.r,
+                              height: 8.r,
+                              decoration: const BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            5.horizontalSpace,
+                            Text('Online', style: AppTextStyles.caption),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 40.w),
+                  AppCircleButton.close(
+                    size: 36.r,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
                 ],
               ),
             ),
-            12.verticalSpace,
+            10.verticalSpace,
+            const Divider(height: 1),
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                 itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  return _ChatBubble(message: _messages[index]);
-                },
+                itemBuilder: (_, i) => _ChatBubble(message: _messages[i]),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-              child: Container(
-                height: 54.h,
-                padding: EdgeInsets.only(left: 18.w, right: 6.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF23243A),
-                  borderRadius: BorderRadius.circular(999.r),
-                  border: Border.all(
-                    color: AppColors.green.withValues(alpha: 0.55),
-                  ),
-                ),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 12.h),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: _messageController,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontFamily: AppFonts.satoshi,
-                          color: AppColors.white,
-                        ),
-                        cursorColor: AppColors.green,
+                        style: AppTextStyles.input,
+                        cursorColor: AppColors.textPrimary,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => _sendMessage(),
                         decoration: InputDecoration(
+                          hintText: 'Type a message…',
+                          hintStyle: AppTextStyles.hint,
+                          filled: true,
+                          fillColor: AppColors.inputFill,
                           isDense: true,
-                          border: InputBorder.none,
-                          hintText: 'Type Message.....',
-                          hintStyle: TextStyle(
-                            fontSize: 14.sp,
-                            fontFamily: AppFonts.satoshi,
-                            color: AppColors.white.withValues(alpha: 0.45),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 18.w,
+                            vertical: 14.h,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(999),
+                            borderSide: const BorderSide(
+                              color: AppColors.border,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(999),
+                            borderSide: const BorderSide(color: AppColors.dark),
                           ),
                         ),
-                        onSubmitted: (_) => _sendMessage(),
                       ),
                     ),
-                    GestureDetector(
+                    10.horizontalSpace,
+                    AppCircleButton(
+                      icon: Icons.send_rounded,
+                      size: 46.r,
+                      background: AppColors.primary,
+                      iconColor: AppColors.onPrimary,
                       onTap: _sendMessage,
-                      child: Container(
-                        width: 42.w,
-                        height: 42.w,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: AppColors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.send_rounded,
-                          color: AppColors.white,
-                          size: 20.sp,
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -226,13 +210,11 @@ class _ChatMessage {
     required this.text,
     required this.time,
     required this.isMine,
-    required this.avatar,
   });
 
   final String text;
   final String time;
   final bool isMine;
-  final String avatar;
 }
 
 class _ChatBubble extends StatelessWidget {
@@ -242,67 +224,44 @@ class _ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubble = Container(
-      constraints: BoxConstraints(maxWidth: 240.w),
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: message.isMine
-            ? const Color(0xFFE8E8E8)
-            : AppColors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16.r),
-          topRight: Radius.circular(16.r),
-          bottomLeft: Radius.circular(message.isMine ? 16.r : 4.r),
-          bottomRight: Radius.circular(message.isMine ? 4.r : 16.r),
-        ),
-      ),
-      child: Text(
-        message.text,
-        style: TextStyle(
-          fontSize: 13.sp,
-          fontFamily: AppFonts.satoshi,
-          color: Colors.black87,
-          height: 1.35,
-        ),
-      ),
-    );
-
-    final avatar = ClipOval(
-      child: Image.asset(
-        message.avatar,
-        width: 34.w,
-        height: 34.w,
-        fit: BoxFit.cover,
-      ),
-    );
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: 14.h),
-      child: Column(
-        crossAxisAlignment:
-            message.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment:
-                message.isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: message.isMine
-                ? [bubble, 8.horizontalSpace, avatar]
-                : [avatar, 8.horizontalSpace, bubble],
-          ),
-          4.verticalSpace,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 42.w),
-            child: Text(
-              message.time,
-              style: TextStyle(
-                fontSize: 11.sp,
-                fontFamily: AppFonts.satoshi,
-                color: AppColors.white.withValues(alpha: 0.45),
+    final mine = message.isMine;
+    return Align(
+      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 12.h),
+        child: Column(
+          crossAxisAlignment: mine
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            Container(
+              constraints: BoxConstraints(maxWidth: 260.w),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: mine ? AppColors.primary : AppColors.surface,
+                border: mine ? null : Border.all(color: AppColors.divider),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.r),
+                  topRight: Radius.circular(16.r),
+                  bottomLeft: Radius.circular(mine ? 16.r : 4.r),
+                  bottomRight: Radius.circular(mine ? 4.r : 16.r),
+                ),
+              ),
+              child: Text(
+                message.text,
+                style: AppTextStyles.body.copyWith(
+                  fontSize: 13.sp,
+                  height: 1.4,
+                ),
               ),
             ),
-          ),
-        ],
+            4.verticalSpace,
+            Text(
+              message.time,
+              style: AppTextStyles.caption.copyWith(fontSize: 10.sp),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,20 +1,29 @@
 class AssetsImages {
-  static const String splashBg = 'assets/images/splashBg.png';
-  static const String logo = 'assets/images/logo.png';
-  static const String authBg = 'assets/images/authBg.png';
+  static const String logoKhail = 'assets/images/logo_khail.png';
+  static const String bgWatermark = 'assets/images/bg_watermark.png';
   static const String onboardingImg = 'assets/images/onboardingImg.png';
-  static const String accessBg = 'assets/images/accessBg.png';
-  static const String homeBg = 'assets/images/homeBg.png';
-  static const String event1 = 'assets/images/event1.png';
-  static const String event2 = 'assets/images/event2.png';
-  static const String event3 = 'assets/images/event3.png';
-  static const String event4 = 'assets/images/event4.png';
-  static const String event5 = 'assets/images/event5.png';
-  static const String event6 = 'assets/images/event6.png';
-  static const String booking1 = 'assets/images/booking1.jpg';
-  static const String booking2 = 'assets/images/booking2.jpg';
-  static const String p1 = 'assets/images/p1.jpg';
-  static const String badminton = 'assets/images/badminton.png';
-  static const String backOrange = 'assets/images/backOrange.png';
-  static const String allBg = 'assets/images/allBg.png';
+  static const String emojiWave = 'assets/images/emoji_wave.png';
+  static const String avatarUser = 'assets/images/avatar_user.jpg';
+  static const String promoRackets = 'assets/images/promo_rackets.png';
+
+  static const String sportBadminton = 'assets/images/sport_badminton.png';
+  static const String sportBasketball = 'assets/images/sport_basketball.png';
+  static const String sportCricket = 'assets/images/sport_cricket.png';
+  static const String sportFootball = 'assets/images/sport_football.png';
+  static const String sportPaddle = 'assets/images/sport_paddle.png';
+  static const String sportTennis = 'assets/images/sport_tennis.png';
+
+  static const String venue1 = 'assets/images/venue_1.jpg';
+  static const String venue2 = 'assets/images/venue_2.jpg';
+  static const String tournament1 = 'assets/images/tournament_1.jpg';
+  static const String tournament2 = 'assets/images/tournament_2.jpg';
+
+  static const String cityKarachi = 'assets/images/cities/karachi.png';
+  static const String cityLahore = 'assets/images/cities/lahore.png';
+  static const String cityIslamabad = 'assets/images/cities/islamabad.png';
+  static const String cityRawalpindi = 'assets/images/cities/rawalpindi.png';
+  static const String cityPeshawar = 'assets/images/cities/peshawar.png';
+  static const String cityQuetta = 'assets/images/cities/quetta.png';
+  static const String cityFaisalabad = 'assets/images/cities/faisalabad.png';
+  static const String cityMultan = 'assets/images/cities/multan.png';
 }

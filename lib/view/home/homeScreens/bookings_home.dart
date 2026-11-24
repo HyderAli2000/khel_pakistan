@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:khel_pakistan/utils/app_colors.dart';
+import 'package:khel_pakistan/utils/app_text_styles.dart';
 import 'package:khel_pakistan/utils/assets_images.dart';
-import 'package:khel_pakistan/utils/fonts.dart';
 import 'package:khel_pakistan/view/home/bookingHome/booking_home_detail_screen.dart';
+import 'package:khel_pakistan/widgets/app_card.dart';
+import 'package:khel_pakistan/widgets/page_header.dart';
+import 'package:khel_pakistan/widgets/segmented_tabs.dart';
 
 class BookingsHome extends StatefulWidget {
   const BookingsHome({super.key});
@@ -16,101 +19,62 @@ class BookingsHome extends StatefulWidget {
 class _BookingsHomeState extends State<BookingsHome> {
   int _selectedTab = 0;
 
-  final List<String> _tabs = const ['Upcoming', 'Ongoing', 'Completed'];
+  static const _tabs = ['Upcoming', 'Ongoing', 'Completed'];
 
-  final List<_BookingData> _bookings = const [
+  static const _bookings = [
     _BookingData(
-      image: AssetsImages.booking1,
+      image: AssetsImages.venue1,
       title: 'Karachi Sports Arena',
-      status: 'Confirmed',
+      location: 'DHA Phase 6, Karachi',
       date: 'Friday, 18 July',
       time: '7:00 PM — 9:00 PM',
     ),
     _BookingData(
-      image: AssetsImages.booking1,
-      title: 'Karachi Sports Arena',
-      status: 'Confirmed',
-      date: 'Friday, 18 July',
-      time: '7:00 PM — 9:00 PM',
-    ),
-    _BookingData(
-      image: AssetsImages.booking2,
-      title: 'Karachi Sports Arena',
-      status: 'Confirmed',
+      image: AssetsImages.venue2,
+      title: 'Legends Padel Club',
+      location: 'Clifton, Karachi',
       date: 'Saturday, 19 July',
       time: '6:00 PM — 8:00 PM',
+    ),
+    _BookingData(
+      image: AssetsImages.venue1,
+      title: 'Arena 51 Football',
+      location: 'Gulshan, Karachi',
+      date: 'Sunday, 20 July',
+      time: '8:00 PM — 10:00 PM',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xff1B1C2D),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16.r),
-          topRight: Radius.circular(16.r),
-        ),
-      ),
+    final status = BookingHomeStatus.values[_selectedTab];
+    return SafeArea(
+      bottom: false,
       child: Column(
         children: [
-          16.verticalSpace,
+          const PageHeader(title: 'My Bookings'),
+          12.verticalSpace,
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Row(
-              children: List.generate(_tabs.length, (index) {
-                final isSelected = _selectedTab == index;
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: index == _tabs.length - 1 ? 0 : 10.w,
-                    ),
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedTab = index),
-                      child: Container(
-                        height: 42.h,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColors.green
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(999.r),
-                          border: Border.all(
-                            color: AppColors.green,
-                            width: 1.2,
-                          ),
-                        ),
-                        child: Text(
-                          _tabs[index],
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontFamily: AppFonts.satoshi,
-                            fontWeight: FontWeight.w700,
-                            color: isSelected
-                                ? AppColors.black
-                                : AppColors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
+            child: SegmentedTabs(
+              tabs: _tabs,
+              selected: _selectedTab,
+              onChanged: (i) => setState(() => _selectedTab = i),
             ),
           ),
           16.verticalSpace,
           Expanded(
             child: ListView.separated(
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 20.h),
+              padding: EdgeInsets.fromLTRB(
+                16.w,
+                0,
+                16.w,
+                MediaQuery.paddingOf(context).bottom + 16.h,
+              ),
               itemCount: _bookings.length,
               separatorBuilder: (_, __) => 12.verticalSpace,
-              itemBuilder: (context, index) {
-                return _BookingCard(
-                  booking: _bookings[index],
-                  status: BookingHomeStatus.values[_selectedTab],
-                );
-              },
+              itemBuilder: (_, i) =>
+                  _BookingCard(booking: _bookings[i], status: status),
             ),
           ),
         ],
@@ -123,14 +87,14 @@ class _BookingData {
   const _BookingData({
     required this.image,
     required this.title,
-    required this.status,
+    required this.location,
     required this.date,
     required this.time,
   });
 
   final String image;
   final String title;
-  final String status;
+  final String location;
   final String date;
   final String time;
 }
@@ -141,24 +105,26 @@ class _BookingCard extends StatelessWidget {
   final _BookingData booking;
   final BookingHomeStatus status;
 
+  void _open() => Get.to(
+    () => BookingHomeDetailScreen(
+      image: booking.image,
+      title: booking.title,
+      status: status,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFF23243A),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.white.withValues(alpha: 0.08)),
-      ),
+    return AppCard(
+      onTap: _open,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12.r),
             child: Image.asset(
               booking.image,
-              width: 88.w,
-              height: 88.w,
+              width: 92.r,
+              height: 92.r,
               fit: BoxFit.cover,
             ),
           ),
@@ -168,86 +134,102 @@ class _BookingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
                         booking.title,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontFamily: AppFonts.satoshi,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.white,
-                        ),
+                        style: AppTextStyles.subtitle.copyWith(fontSize: 15.sp),
                       ),
                     ),
                     8.horizontalSpace,
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.orange,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        booking.status,
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontFamily: AppFonts.satoshi,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.white,
-                        ),
-                      ),
-                    ),
+                    StatusChip(status: status),
                   ],
                 ),
-                8.verticalSpace,
-                Text(
-                  'Date: ${booking.date}',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontFamily: AppFonts.satoshi,
-                    color: AppColors.white.withValues(alpha: 0.55),
-                  ),
+                4.verticalSpace,
+                Text(booking.location, style: AppTextStyles.caption),
+                10.verticalSpace,
+                _InfoRow(
+                  icon: Icons.calendar_today_outlined,
+                  text: booking.date,
                 ),
                 4.verticalSpace,
-                Text(
-                  'Time: ${booking.time}',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontFamily: AppFonts.satoshi,
-                    color: AppColors.white.withValues(alpha: 0.55),
-                  ),
-                ),
-                8.verticalSpace,
-                GestureDetector(
-                  onTap: () => Get.to(
-                    () => BookingHomeDetailScreen(
-                      image: booking.image,
-                      title: booking.title,
-                      status: status,
-                    ),
-                  ),
-                  child: Text(
-                    'View Details',
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontFamily: AppFonts.satoshi,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.green,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.green,
-                    ),
-                  ),
-                ),
+                _InfoRow(icon: Icons.schedule_rounded, text: booking.time),
               ],
             ),
           ),
+          4.horizontalSpace,
+          Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.textHint,
+            size: 22.r,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 14.r, color: AppColors.textSecondary),
+        6.horizontalSpace,
+        Text(
+          text,
+          style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+        ),
+      ],
+    );
+  }
+}
+
+/// Booking status pill: lime = confirmed, dark = in progress, grey = done.
+class StatusChip extends StatelessWidget {
+  const StatusChip({super.key, required this.status});
+
+  final BookingHomeStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, bg, fg) = switch (status) {
+      BookingHomeStatus.upcoming => (
+        'Confirmed',
+        AppColors.primary,
+        AppColors.onPrimary,
+      ),
+      BookingHomeStatus.ongoing => (
+        'In Progress',
+        AppColors.dark,
+        AppColors.primary,
+      ),
+      BookingHomeStatus.completed => (
+        'Completed',
+        AppColors.inputFill,
+        AppColors.textSecondary,
+      ),
+    };
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: AppTextStyles.caption.copyWith(
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w600,
+          color: fg,
+        ),
       ),
     );
   }
